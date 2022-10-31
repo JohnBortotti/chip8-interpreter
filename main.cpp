@@ -1,16 +1,11 @@
 #include <iostream>
-
-/*
-    CHIP-8 Interpreter
-
-    16-bit addresses stack
-*/
+#include <SDL2/SDL.h>
 
 class chip8
 {
 public:
     unsigned short opcode;
-    
+
     // 4KB RAM memory
     unsigned char memory[4096];
 
@@ -27,7 +22,7 @@ public:
     // graphics matrix (64x32 pixels / bits)
     unsigned char gfx[64 * 32];
 
-    // delay and sound timers (1-byte) 
+    // delay and sound timers (1-byte)
     unsigned short delay_timer;
     unsigned short sound_timer;
 
@@ -39,7 +34,7 @@ public:
 
     void initialize()
     {
-        // [ ] reset registers 
+        // [ ] reset registers
         // [ ] load game
     }
 
@@ -49,23 +44,42 @@ public:
         // [ ] decode
         // [ ] execute
 
-        // [ ] update (set timers, pc, draw_flag, etc) 
+        // [ ] update (set timers, pc, draw_flag, etc)
     }
 };
 
 int main()
 {
     chip8 chip8;
+    SDL_Window *window;
+    SDL_Surface *screenSurface;
 
-    // [ ] setup graphics engine
+    // setup SDL engine
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0)
+    {
+        std::cout << "Erro: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+    }
 
-    chip8.initialize();
+    window = SDL_CreateWindow("CHIP-8", 100, 50, 320, 480, SDL_WINDOW_SHOWN);
+
+    if (!window)
+    {
+        std::cout << "Erro: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+    }
+
+    SDL_Delay(5000);
+    SDL_Quit();
+
+
+    // chip8.initialize();
 
     for (;;) {
 
-        // [ ] emulate cycle
-        // [ ] update graphics
-        // [ ] get keypress
+    //     // [ ] emulate cycle
+    //     // [ ] update graphics
+    //     // [ ] get keypress
     }
 
     return 0;
