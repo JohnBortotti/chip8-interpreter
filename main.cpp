@@ -49,8 +49,8 @@ public:
   // sound timer
   unsigned short sound_timer;
 
-  // stack and stack_pointer
-  unsigned short stck[16];
+  // stack and stack_pointer (used to return from subroutines)
+  unsigned short stack[16];
   unsigned short stack_pointer;
 
   unsigned char keypad[16];
@@ -85,6 +85,13 @@ public:
     printf("executing opcode: %x \n", opcode);
 
     switch (opcode & 0xF000) {
+    case 0x2000: {
+      // store the current PC on stack, so we can return after subroutine
+      stack[stack_pointer] = PC;
+      stack_pointer++;
+      PC = opcode & 0x0FFF;
+      break;
+    }
     case 0x6000:
       V[opcode & 0x0F00] = opcode & 0x00FF;
       PC += 2;
@@ -209,7 +216,7 @@ private:
   };
 
   void clear_stack() {
-    for (unsigned short &x : stck) {
+    for (unsigned short &x : stack) {
       x = 0;
     }
 
