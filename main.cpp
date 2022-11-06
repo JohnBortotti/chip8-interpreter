@@ -135,6 +135,28 @@ public:
       PC += 2;
       break;
     }
+    case 0xF000: {
+      switch (opcode & 0x00FF) {
+      case 0x33: {
+        unsigned short x = V[opcode & 0x0F00];
+
+        // hundreds digits
+        memory[I] = x / 10;
+        // tens digits
+        memory[I + 1] = (x / 10) % 10;
+        // ones digit
+        memory[I + 2] = (x % 100) % 10;
+        PC += 2;
+        break;
+      }
+      default:
+        printf("opcode desconhecido: %X\n", opcode);
+        exit(0);
+        break;
+        break;
+      }
+      break;
+    }
     default:
       printf("opcode desconhecido: %X\n", opcode);
       exit(0);
