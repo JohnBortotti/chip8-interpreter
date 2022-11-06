@@ -85,6 +85,19 @@ public:
     printf("executing opcode: %x \n", opcode);
 
     switch (opcode & 0xF000) {
+    case 0x0000: {
+      switch (opcode & 0x00FF) {
+      case 0xEE: {
+        PC = stack[stack_pointer];
+        stack_pointer--;
+        break;
+      }
+      default:
+        printf("opcode desconhecido: %X\n", opcode);
+        exit(0);
+        break;
+      }
+    }
     case 0x2000: {
       // store the current PC on stack, so we can return after subroutine
       stack[stack_pointer] = PC;
