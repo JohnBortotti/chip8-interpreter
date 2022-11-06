@@ -137,6 +137,11 @@ public:
     }
     case 0xF000: {
       switch (opcode & 0x00FF) {
+      case 0x29: {
+        I = (V[opcode & 0x0F00]) * 0x5;
+        PC += 2;
+        break;
+      }
       case 0x33: {
         unsigned short x = V[opcode & 0x0F00];
 
