@@ -96,6 +96,10 @@ public:
       V[opcode & 0x0F00] = opcode & 0x00FF;
       PC += 2;
       break;
+    case 0x7000:
+      V[opcode & 0x0F00] += (opcode & 0x00FF);
+      PC += 2;
+      break;
     case 0xA000:
       I = opcode & 0x0FFF;
       PC += 2;
