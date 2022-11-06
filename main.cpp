@@ -149,10 +149,17 @@ public:
         PC += 2;
         break;
       }
+      case 0x65: {
+        for (int i = 0; i <= ((opcode & 0x0F00) >> 8); i++) {
+          V[i] = memory[I + i];
+        }
+
+        PC += 2;
+        break;
+      }
       default:
         printf("opcode desconhecido: %X\n", opcode);
         exit(0);
-        break;
         break;
       }
       break;
