@@ -131,7 +131,7 @@ public:
         }
       }
 
-      draw_flag = true;
+      draw_flag = 1;
       PC += 2;
       break;
     }
@@ -163,9 +163,11 @@ public:
       break;
     }
 
-    if (draw_flag == true) {
+    // after opcode execution
+    // if draw_flag is set, then update display
+    if (draw_flag == 1) {
       render_SDL_from_gfx();
-      draw_flag = false;
+      draw_flag = 0;
     }
 
     // [ ] update (set timers draw_flag,)
@@ -175,7 +177,6 @@ private:
   void initialize_SDL() {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
     SDL_CreateWindowAndRenderer(900, 600, 0, &window, &renderer);
-    SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     sdl_rect.x = 0;
@@ -201,6 +202,7 @@ private:
     }
 
     SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer);
   }
 
   void clear_gfx() {
