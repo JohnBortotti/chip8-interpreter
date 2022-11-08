@@ -84,9 +84,15 @@ public:
 
     printf("executing opcode: %x \n", opcode);
 
+    unsigned short x = (opcode & 0x0F00) >> 8;
+    unsigned short y = (opcode & 0x00F0) >> 4;
+    unsigned short nnn = (opcode & 0x0FFF);
+    unsigned short nn = (opcode & 0x00FF);
+    unsigned short n = (opcode & 0x000F);
+
     switch (opcode & 0xF000) {
     case 0x0000: {
-      switch (opcode & 0x00FF) {
+      switch (nn) {
       case 0xEE: {
         PC = stack[stack_pointer];
         stack_pointer--;
@@ -102,32 +108,29 @@ public:
       // store the current PC on stack, so we can return after subroutine
       stack[stack_pointer] = PC;
       stack_pointer++;
-      PC = opcode & 0x0FFF;
+      PC = nnn;
       break;
     }
     case 0x6000:
-      V[opcode & 0x0F00] = opcode & 0x00FF;
+      V[x] = nn;
       PC += 2;
       break;
     case 0x7000:
-      V[opcode & 0x0F00] += (opcode & 0x00FF);
+      V[x] += (nn);
       PC += 2;
       break;
     case 0xA000:
-      I = opcode & 0x0FFF;
+      I = nnn;
       PC += 2;
       break;
     case 0xD000: {
-      unsigned short x = V[(opcode & 0x0F00) >> 8];
-      unsigned short y = V[(opcode & 0x00F0) >> 4];
-      unsigned short height = opcode & 0x000F;
       unsigned short row_pixels;
 
       // flag register (on this scope, it will be used as the "collision flag")
       V[0xF] = 0;
 
       // loop row (for height)
-      for (int y_axis = 0; y_axis < height; y_axis++) {
+      for (int y_axis = 0; y_axis < n; y_axis++) {
         row_pixels = memory[I + y_axis];
 
         // loop bits of row (8 bits per sprite)
@@ -153,14 +156,14 @@ public:
       break;
     }
     case 0xF000: {
-      switch (opcode & 0x00FF) {
+      switch (nn) {
       case 0x29: {
-        I = (V[opcode & 0x0F00]) * 0x5;
+        I = (V[x]) * 0x5;
         PC += 2;
         break;
       }
       case 0x33: {
-        unsigned short x = V[opcode & 0x0F00];
+        unsigned short x = V[x];
 
         // hundreds digits
         memory[I] = x / 10;
@@ -172,7 +175,7 @@ public:
         break;
       }
       case 0x65: {
-        for (int i = 0; i <= ((opcode & 0x0F00) >> 8); i++) {
+        for (int i = 0; i <= (x); i++) {
           V[i] = memory[I + i];
         }
 
