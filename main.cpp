@@ -76,7 +76,7 @@ public:
     reset_timers();
     load_fontset();
 
-    load_game("roms/PONG");
+    load_game("roms/TEST_OPCODE");
   }
 
   void emulate_cycle() {
@@ -93,9 +93,21 @@ public:
     switch (opcode & 0xF000) {
     case 0x0000: {
       switch (nn) {
+      case 0x00: {
+        for (int i = 0; i < 32; i++) {
+          for (int j = 0; j < 64; j++) {
+            gfx[j][i] = 0;
+          }
+        }
+
+        draw_flag = 1;
+        PC += 2;
+        break;
+      }
       case 0xEE: {
         PC = stack[stack_pointer];
         stack_pointer--;
+        PC += 2;
         break;
       }
       default:
@@ -103,6 +115,10 @@ public:
         exit(0);
         break;
       }
+    }
+    case 0x1000: {
+      PC = nnn;
+      break;
     }
     case 0x2000: {
       // store the current PC on stack, so we can return after subroutine
@@ -307,7 +323,7 @@ int main() {
 
   chip8.initialize();
 
-  for (;;) {
+  for (int i = 5; i < 20; i++) {
     chip8.emulate_cycle();
   }
 
