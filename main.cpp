@@ -127,6 +127,32 @@ public:
       PC = nnn;
       break;
     }
+    case 0x3000: {
+      if (V[x] == nn) {
+
+        PC += 4;
+      } else {
+        PC += 2;
+      }
+
+      break;
+    }
+    case 0x4000: {
+      if (V[x] != nn) {
+        PC += 4;
+      } else {
+        PC += 2;
+      }
+      break;
+    }
+    case 0x5000: {
+      if (V[x] == V[y]) {
+        PC += 4;
+      } else {
+        PC += 4;
+      }
+      break;
+    }
     case 0x6000:
       V[x] = nn;
       PC += 2;
@@ -135,6 +161,14 @@ public:
       V[x] += (nn);
       PC += 2;
       break;
+    case 0x9000: {
+      if (V[x] != V[y]) {
+        PC += 4;
+      } else {
+        PC += 2;
+      }
+      break;
+    }
     case 0xA000:
       I = nnn;
       PC += 2;
@@ -323,11 +357,9 @@ int main() {
 
   chip8.initialize();
 
-  for (int i = 5; i < 20; i++) {
+  for (int i = 0; i < 100; i++) {
     chip8.emulate_cycle();
   }
-
-  SDL_Quit();
 
   return 0;
 }
