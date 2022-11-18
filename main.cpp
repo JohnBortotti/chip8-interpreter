@@ -102,12 +102,22 @@ public:
       printf("V%x: %x  ", i, V[i]);
     }
     printf("\n \n");
+
+    printf("MEMORY: \n");
+    for (int i = PC - 10; i < PC + 10; i++) {
+      if (i == PC - 2) {
+        printf("\x1b[42m"
+               "%X%X - \n"
+               "\x1b[0m",
+               memory[i], memory[i + 1]);
+      } else {
+        printf("%X%X \n", memory[i], memory[i + 1]);
+      }
+    }
   }
 
   void emulate_cycle() {
     opcode = memory[PC] << 8 | memory[PC + 1];
-
-    // printf("executing opcode: %x \n", opcode);
 
     unsigned short x = (opcode & 0x0F00) >> 8;
     unsigned short y = (opcode & 0x00F0) >> 4;
@@ -170,7 +180,7 @@ public:
       if (V[x] == V[y]) {
         PC += 4;
       } else {
-        PC += 4;
+        PC += 2;
       }
       break;
     }
