@@ -79,10 +79,35 @@ public:
     load_game("roms/TEST_OPCODE");
   }
 
+  void debug_print() {
+    system("clear");
+    printf("Loaded ROM: %s \n \n", "TEST_OPCODE");
+
+    printf("OPCODE: %X \n", opcode);
+    printf("PC: %X \n \n", PC);
+
+    printf("I: %X \n \n", I);
+
+    printf("Draw flag: %d \n \n", draw_flag);
+
+    printf("delay_timer: %d   sound_timer: %d \n \n", delay_timer, sound_timer);
+
+    printf("stack pointer: %x \n", stack_pointer);
+    for (int i = 0; i < 16; i++) {
+      printf("%x ", stack[i]);
+    }
+    printf("\n \n");
+
+    for (int i = 0; i < 16; i++) {
+      printf("V%x: %x  ", i, V[i]);
+    }
+    printf("\n \n");
+  }
+
   void emulate_cycle() {
     opcode = memory[PC] << 8 | memory[PC + 1];
 
-    printf("executing opcode: %x \n", opcode);
+    // printf("executing opcode: %x \n", opcode);
 
     unsigned short x = (opcode & 0x0F00) >> 8;
     unsigned short y = (opcode & 0x00F0) >> 4;
@@ -93,13 +118,8 @@ public:
     switch (opcode & 0xF000) {
     case 0x0000: {
       switch (nn) {
-      case 0x00: {
-        for (int i = 0; i < 32; i++) {
-          for (int j = 0; j < 64; j++) {
-            gfx[j][i] = 0;
-          }
-        }
-
+      case 0xe0: {
+        clear_gfx();
         draw_flag = 1;
         PC += 2;
         break;
@@ -115,13 +135,14 @@ public:
         exit(0);
         break;
       }
+      break;
     }
     case 0x1000: {
       PC = nnn;
       break;
     }
     case 0x2000: {
-      // store the current PC on stack, so we can return after subroutine
+      // store the current PC on stack, so we can return after the subroutine
       stack[stack_pointer] = PC;
       stack_pointer++;
       PC = nnn;
@@ -207,6 +228,11 @@ public:
     }
     case 0xF000: {
       switch (nn) {
+      case 0x15: {
+        delay_timer = x;
+        PC += 2;
+        break;
+      }
       case 0x29: {
         I = (V[x]) * 0x5;
         PC += 2;
@@ -284,7 +310,9 @@ private:
     }
 
     SDL_RenderPresent(renderer);
-    SDL_RenderClear(renderer);
+    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    // SDL_RenderClear(renderer);
+    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   }
 
   void clear_gfx() {
@@ -356,9 +384,23 @@ int main() {
   chip8 chip8;
 
   chip8.initialize();
+  chip8.debug_print();
 
-  for (int i = 0; i < 100; i++) {
-    chip8.emulate_cycle();
+  while (true) {
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+      if (event.type == SDL_QUIT) {
+        exit(0);
+      }
+
+      if (event.type == SDL_KEYDOWN) {
+        chip8.emulate_cycle();
+        chip8.debug_print();
+      }
+    }
+
+    // update game state, draw the current frame
   }
 
   return 0;
