@@ -106,6 +106,11 @@ public:
     printf("MEMORY: \n");
     for (int i = PC - 10; i < PC + 10; i++) {
       if (i == PC - 2) {
+        printf("\x1b[41m"
+               "%X%X - \n"
+               "\x1b[0m",
+               memory[i], memory[i + 1]);
+      } else if (i == PC) {
         printf("\x1b[42m"
                "%X%X - \n"
                "\x1b[0m",
