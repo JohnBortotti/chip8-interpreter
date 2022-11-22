@@ -195,14 +195,14 @@ void chip8::emulate_cycle() {
       break;
     }
     case 0x33: {
-      unsigned short x = V[x];
+      unsigned short z = V[x];
 
       // hundreds digits
-      memory[I] = x / 10;
-      // tens digits
-      memory[I + 1] = (x / 10) % 10;
-      // ones digit
-      memory[I + 2] = (x % 100) % 10;
+      memory[I] = z / 10;
+      // // tens digits
+      memory[I + 1] = (z / 10) % 10;
+      // // ones digit
+      memory[I + 2] = (z % 100) % 10;
       PC += 2;
       break;
     }
@@ -210,6 +210,8 @@ void chip8::emulate_cycle() {
       for (int i = 0; i <= (x); i++) {
         V[i] = memory[I + i];
       }
+
+      I = I + x + 1;
 
       PC += 2;
       break;

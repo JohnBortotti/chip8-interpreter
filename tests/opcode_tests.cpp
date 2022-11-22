@@ -164,3 +164,84 @@ TEST_CASE("opcode 0x9XY0 should skip if V[x] != V[y]") {
 
   REQUIRE(chip8.PC == 6);
 }
+
+TEST_CASE("opcode 0xANNN should set I = NNN") {
+  chip8.PC = 0;
+  chip8.I = 0;
+
+  chip8.memory[0] = 0xA1;
+  chip8.memory[1] = 0x66;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.I == 0x166);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0xFX15 should set delay_timer = x") {
+  chip8.PC = 0;
+  chip8.delay_timer = 0;
+
+  chip8.memory[0] = 0xF3;
+  chip8.memory[1] = 0x15;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.delay_timer == 3);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0xFX29 should set I to sprite corresponding of V[x]") {
+  chip8.PC = 0;
+  chip8.V[6] = 4;
+
+  chip8.memory[0] = 0xF6;
+  chip8.memory[1] = 0x29;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 2);
+  REQUIRE(chip8.I == 20);
+}
+
+TEST_CASE("opcode 0xFX33 should set binary-ecimal of V[x] at I I+1 and I+2") {
+  chip8.PC = 0;
+  chip8.V[9] = 237;
+  chip8.I = 10;
+
+  chip8.memory[0] = 0xF9;
+  chip8.memory[1] = 0x33;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 2);
+  REQUIRE(chip8.memory[chip8.I] == 23);
+  REQUIRE(chip8.memory[chip8.I + 1] == 3);
+  REQUIRE(chip8.memory[chip8.I + 2] == 7);
+}
+
+TEST_CASE("opcode 0xFX65 should fill V[0] to V[x] with values starting at I") {
+  chip8.PC = 0;
+  chip8.V[0] = 0;
+  chip8.V[1] = 0;
+  chip8.V[2] = 0;
+
+  chip8.I = 6;
+
+  chip8.memory[6] = 42;
+  chip8.memory[7] = 47;
+  chip8.memory[8] = 51;
+
+  chip8.memory[0] = 0xF2;
+  chip8.memory[1] = 0x65;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[0] == 42);
+  REQUIRE(chip8.V[1] == 47);
+  REQUIRE(chip8.V[2] == 51);
+
+  REQUIRE(chip8.I == 9);
+
+  REQUIRE(chip8.PC == 2);
+}
