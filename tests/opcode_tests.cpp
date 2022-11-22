@@ -77,3 +77,90 @@ TEST_CASE("opcode 0x3XNN should skip next if V[x] == nn") {
 
   REQUIRE(chip8.PC == 6);
 }
+
+TEST_CASE("opcode 0x4XNN should skip next if V[X] != nn") {
+  chip8.PC = 0;
+  chip8.V[1] = 4;
+
+  chip8.memory[0] = 0x41;
+  chip8.memory[1] = 0x04;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 2);
+
+  chip8.memory[2] = 0x41;
+  chip8.memory[3] = 0x17;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 6);
+}
+
+TEST_CASE("opcode 0x5XY0 should skip next if V[x] == V[y]") {
+  chip8.PC = 0;
+  chip8.V[1] = 4;
+  chip8.V[2] = 1;
+  chip8.V[5] = 4;
+
+  chip8.memory[0] = 0x51;
+  chip8.memory[1] = 0x20;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 2);
+
+  chip8.memory[2] = 0x51;
+  chip8.memory[3] = 0x50;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 6);
+}
+
+TEST_CASE("opcode 0x6XNN should set V[x] = NN") {
+  chip8.PC = 0;
+  chip8.V[1] = 0;
+
+  chip8.memory[0] = 0x61;
+  chip8.memory[1] = 0x42;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[1] == 0x42);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0x7XNN should increment V[x] += nn") {
+  chip8.PC = 0;
+  chip8.V[3] = 2;
+
+  chip8.memory[0] = 0x73;
+  chip8.memory[1] = 0x07;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[3] == 9);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0x9XY0 should skip if V[x] != V[y]") {
+  chip8.PC = 0;
+  chip8.V[1] = 4;
+  chip8.V[2] = 1;
+  chip8.V[5] = 4;
+
+  chip8.memory[0] = 0x91;
+  chip8.memory[1] = 0x20;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 4);
+
+  chip8.memory[2] = 0x91;
+  chip8.memory[3] = 0x50;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 6);
+}
