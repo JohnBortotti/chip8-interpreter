@@ -48,7 +48,6 @@ TEST_CASE("opcode 0x1NNN should set PC to NNN") {
 TEST_CASE("opcode 0x2NNN should execute procedure at NNN and push to stack") {
   chip8.PC = 3;
   chip8.stack_pointer = 0;
-
   chip8.memory[3] = 0x26;
   chip8.memory[4] = 0x66;
 
@@ -176,6 +175,36 @@ TEST_CASE("opcode 0xANNN should set I = NNN") {
 
   REQUIRE(chip8.I == 0x166);
   REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0xDXYN should set correct gfx bitmap and render pixels") {
+  chip8.PC = 0;
+  chip8.I = 11;
+
+  chip8.V[0xF] = 0;
+  chip8.V[3] = 2;
+  chip8.V[7] = 2;
+
+  chip8.memory[0] = 0xD3;
+  chip8.memory[1] = 0x72;
+
+  chip8.memory[11] = 0b11000000;
+  chip8.memory[12] = 0b00000011;
+
+  chip8.gfx[2][2] = 1;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[0xF] == 1);
+  REQUIRE(chip8.PC == 2);
+  REQUIRE(chip8.I == 11);
+
+  REQUIRE(chip8.gfx[2][2] == 0);
+  REQUIRE(chip8.gfx[3][2] == 1);
+  REQUIRE(chip8.gfx[5][2] == 0);
+
+  REQUIRE(chip8.gfx[2][3] == 0);
+  REQUIRE(chip8.gfx[8][3] == 1);
 }
 
 TEST_CASE("opcode 0xFX15 should set delay_timer = x") {

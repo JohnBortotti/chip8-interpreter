@@ -160,20 +160,20 @@ void chip8::emulate_cycle() {
     for (int y_axis = 0; y_axis < n; y_axis++) {
       row_pixels = memory[I + y_axis];
 
-      // loop bits of row (8 bits per sprite)
+      // loop bits of row (8 bits per row)
       for (int x_axis = 0; x_axis < 8; x_axis++) {
 
         // if current pixel is set to 1 (non zero)
         if ((row_pixels & (0x80 >> x_axis)) != 0) {
 
           // detect collision
-          if (gfx[x + x_axis][y + y_axis] == 1) {
+          if (gfx[V[x] + x_axis][V[y] + y_axis] == 1) {
             // set collision flag
             V[0xF] = 1;
           }
 
           // XOR bit to draw the result
-          gfx[x + x_axis][y + y_axis] ^= 1;
+          gfx[V[x] + x_axis][V[y] + y_axis] ^= 1;
         }
       }
     }
