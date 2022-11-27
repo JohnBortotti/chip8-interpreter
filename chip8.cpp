@@ -64,14 +64,14 @@ void chip8::debug_print() {
 
   printf("\n \n");
 
-  printf("GFX: \n");
-  for (int y = 0; y < 32; y++) {
-    for (int x = 0; x < 64; x++) {
-      printf("%d", gfx[x][y]);
-    }
-
-    printf("\n");
-  }
+  // printf("GFX: \n");
+  // for (int y = 0; y < 32; y++) {
+  //   for (int x = 0; x < 64; x++) {
+  //     printf("%d", gfx[x][y]);
+  //   }
+  //
+  //   printf("\n");
+  // }
 }
 
 void chip8::emulate_cycle() {
@@ -149,6 +149,19 @@ void chip8::emulate_cycle() {
     V[x] += (nn);
     PC += 2;
     break;
+  case 0x8000: {
+    switch (n) {
+    case 0x0: {
+      V[x] = V[y];
+      PC += 2;
+      break;
+    }
+    default:
+      printf("opcode desconhecido: %X\n", opcode);
+      exit(0);
+      break;
+    }
+  }
   case 0x9000: {
     if (V[x] != V[y]) {
       PC += 4;
