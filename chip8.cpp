@@ -46,7 +46,7 @@ void chip8::debug_print() {
   printf("\n \n");
 
   printf("MEMORY: \n");
-  for (int i = PC - 10; i < PC + 10; i++) {
+  for (int i = PC - 10; i < PC + 10; i += 2) {
     if (i == PC - 2) {
       printf("\x1b[41m"
              "%X%X - \n"
@@ -60,6 +60,17 @@ void chip8::debug_print() {
     } else {
       printf("%X%X \n", memory[i], memory[i + 1]);
     }
+  }
+
+  printf("\n \n");
+
+  printf("GFX: \n");
+  for (int y = 0; y < 32; y++) {
+    for (int x = 0; x < 64; x++) {
+      printf("%d", gfx[x][y]);
+    }
+
+    printf("\n");
   }
 }
 
@@ -75,7 +86,7 @@ void chip8::emulate_cycle() {
   switch (opcode & 0xF000) {
   case 0x0000: {
     switch (nn) {
-    case 0xe0: {
+    case 0xE0: {
       clear_gfx();
       draw_flag = 1;
       PC += 2;
@@ -237,7 +248,7 @@ void chip8::emulate_cycle() {
 
 void chip8::initialize_SDL() {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
-  SDL_CreateWindowAndRenderer(900, 600, 0, &window, &renderer);
+  SDL_CreateWindowAndRenderer(768, 384, 0, &window, &renderer);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
   sdl_rect.x = 0;
@@ -249,12 +260,14 @@ void chip8::initialize_SDL() {
 void chip8::render_SDL_from_gfx() {
   int i, j;
 
-  for (i = 0; i <= 32; i++) {
-    for (j = 0; j <= 64; j++) {
+  sdl_rect.y = 0;
+  sdl_rect.x = 0;
+
+  for (i = 0; i < 32; i++) {
+    for (j = 0; j < 64; j++) {
       if (this->gfx[j][i] != 0) {
         SDL_RenderFillRect(renderer, &sdl_rect);
       }
-
       sdl_rect.x = sdl_rect.x + 12;
     }
 
