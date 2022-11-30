@@ -220,6 +220,20 @@ TEST_CASE("opcode 0xFX15 should set delay_timer = x") {
   REQUIRE(chip8.PC == 2);
 }
 
+TEST_CASE("opcode 0xFX1E should set I += V[x]") {
+  chip8.PC = 0;
+  chip8.V[4] = 2;
+  chip8.I = 3;
+
+  chip8.memory[0] = 0xF4;
+  chip8.memory[1] = 0x1E;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 2);
+  REQUIRE(chip8.I == 5);
+}
+
 TEST_CASE("opcode 0xFX29 should set I to sprite corresponding of V[x]") {
   chip8.PC = 0;
   chip8.V[6] = 4;
