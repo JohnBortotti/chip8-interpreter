@@ -18,7 +18,7 @@ void chip8::initialize() {
   reset_timers();
   load_fontset();
 
-  load_game("../roms/IBM");
+  load_game("../roms/LOGO.ch8");
 }
 
 void chip8::debug_print() {
@@ -63,15 +63,6 @@ void chip8::debug_print() {
   }
 
   printf("\n \n");
-
-  // printf("GFX: \n");
-  // for (int y = 0; y < 32; y++) {
-  //   for (int x = 0; x < 64; x++) {
-  //     printf("%d", gfx[x][y]);
-  //   }
-  //
-  //   printf("\n");
-  // }
 }
 
 void chip8::emulate_cycle() {
@@ -210,6 +201,11 @@ void chip8::emulate_cycle() {
     switch (nn) {
     case 0x15: {
       delay_timer = x;
+      PC += 2;
+      break;
+    }
+    case 0x1E: {
+      I += V[x];
       PC += 2;
       break;
     }
