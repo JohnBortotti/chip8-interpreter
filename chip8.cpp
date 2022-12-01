@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-void chip8::initialize() {
+void chip8::initialize(std::string rom_path) {
   PC = 0x200;
   opcode = 0;
   I = 0x00;
@@ -18,7 +18,7 @@ void chip8::initialize() {
   reset_timers();
   load_fontset();
 
-  load_game("../roms/LOGO.ch8");
+  load_game(rom_path);
 }
 
 void chip8::debug_print() {

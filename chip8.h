@@ -59,8 +59,9 @@ public:
   SDL_Renderer *renderer;
   SDL_Surface *screenSurface;
   SDL_Rect sdl_rect;
+  SDL_Event sdl_event;
 
-  void initialize();
+  void initialize(std::string rom_path);
   void debug_print();
   void emulate_cycle();
 
