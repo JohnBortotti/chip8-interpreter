@@ -205,6 +205,40 @@ TEST_CASE("opcode 0x8XY3 should set v[x] = v[x] XOR v[y]") {
   REQUIRE(chip8.PC == 2);
 }
 
+TEST_CASE("opcode 0x8XY4 should add v[y] to v[x] with carry flag") {
+  chip8.PC = 0;
+
+  chip8.V[4] = 200;
+  chip8.V[5] = 57;
+  chip8.V[0xF] = 0;
+
+  chip8.memory[0] = 0x84;
+  chip8.memory[1] = 0x54;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[4] == 1);
+  REQUIRE(chip8.V[0xF] == 1);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0x8XY5 should subtract value v[y] to v[x] with borrow flag") {
+  chip8.PC = 0;
+
+  chip8.V[1] = 10;
+  chip8.V[2] = 2;
+  chip8.V[0xF] = 0;
+
+  chip8.memory[0] = 0x81;
+  chip8.memory[1] = 0x25;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[1] == 8);
+  REQUIRE(chip8.V[0xF] == 1);
+  REQUIRE(chip8.PC == 2);
+}
+
 TEST_CASE("opcode 0x9XY0 should skip if V[x] != V[y]") {
   chip8.PC = 0;
   chip8.V[1] = 4;
