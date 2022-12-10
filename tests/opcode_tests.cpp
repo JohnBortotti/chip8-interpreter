@@ -143,6 +143,36 @@ TEST_CASE("opcode 0x7XNN should increment V[x] += nn") {
   REQUIRE(chip8.PC == 2);
 }
 
+TEST_CASE("OPCODE 0x8XY0 should set v[x] = v[y]") {
+  chip8.PC = 0;
+
+  chip8.V[2] = 1;
+  chip8.V[5] = 4;
+
+  chip8.memory[0] = 0x82;
+  chip8.memory[1] = 0x50;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[2] == 4);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0x8XY1 should set v[x] = v[x] OR v[y]") {
+  chip8.PC = 0;
+
+  chip8.V[1] = 0;
+  chip8.V[2] = 1;
+
+  chip8.memory[0] = 0x81;
+  chip8.memory[1] = 0x21;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[1] == 1);
+  REQUIRE(chip8.PC == 2);
+}
+
 TEST_CASE("opcode 0x9XY0 should skip if V[x] != V[y]") {
   chip8.PC = 0;
   chip8.V[1] = 4;

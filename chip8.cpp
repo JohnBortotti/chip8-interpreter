@@ -148,11 +148,17 @@ void chip8::emulate_cycle() {
       PC += 2;
       break;
     }
+    case 0x1: {
+      V[x] = (V[x] || V[y]);
+      PC += 2;
+      break;
+    }
     default:
       printf("opcode desconhecido: %X\n", opcode);
       exit(0);
       break;
     }
+    break;
   }
   case 0x9000: {
     if (V[x] != V[y]) {
