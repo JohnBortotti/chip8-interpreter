@@ -23,7 +23,7 @@ TEST_CASE("opcode 0x00EE should return from procedure and pop stack") {
   chip8.PC = 0;
 
   chip8.stack_pointer = 4;
-  chip8.stack[4] = 42;
+  chip8.stack[3] = 42;
 
   chip8.memory[0] = 0x00;
   chip8.memory[1] = 0xEE;

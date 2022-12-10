@@ -52,7 +52,7 @@ public:
   unsigned short stack[16];
   unsigned short stack_pointer;
 
-  unsigned char keypad[16];
+  bool keypad[16];
 
   // SDL
   SDL_Window *window;
@@ -69,6 +69,7 @@ private:
   void initialize_SDL();
   void render_SDL_from_gfx();
   void clear_gfx();
+  void clear_keypad();
   void load_fontset();
   void clear_memory();
   void reset_timers();

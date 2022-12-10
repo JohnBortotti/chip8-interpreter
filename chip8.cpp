@@ -11,6 +11,7 @@ void chip8::initialize(std::string rom_path) {
 
   initialize_SDL();
 
+  clear_keypad();
   clear_gfx();
   clear_memory();
   clear_registers();
@@ -84,8 +85,8 @@ void chip8::emulate_cycle() {
       break;
     }
     case 0xEE: {
-      PC = stack[stack_pointer];
       stack_pointer--;
+      PC = stack[stack_pointer];
       PC += 2;
       break;
     }
@@ -294,6 +295,12 @@ void chip8::clear_gfx() {
     for (j = 0; j <= 64; j++) {
       this->gfx[j][i] = 0;
     }
+  }
+}
+
+void chip8::clear_keypad() {
+  for (int i = 0; i <= 16; i++) {
+    this->keypad[i] = 0;
   }
 }
 
