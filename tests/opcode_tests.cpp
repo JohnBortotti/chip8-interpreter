@@ -410,6 +410,27 @@ TEST_CASE("opcode 0xFX33 should set binary-ecimal of V[x] at I I+1 and I+2") {
   REQUIRE(chip8.memory[chip8.I + 2] == 7);
 }
 
+TEST_CASE("opcode 0xFX55 should store V[0] to V[x] in memory starting at I") {
+  chip8.PC = 0;
+  chip8.V[0] = 6;
+  chip8.V[1] = 6;
+  chip8.V[2] = 9;
+
+  chip8.I = 12;
+
+  chip8.memory[0] = 0xF2;
+  chip8.memory[1] = 0x55;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.memory[12] == 6);
+  REQUIRE(chip8.memory[13] == 6);
+  REQUIRE(chip8.memory[14] == 9);
+
+  REQUIRE(chip8.I == 15);
+
+  REQUIRE(chip8.PC == 2);
+}
 TEST_CASE("opcode 0xFX65 should fill V[0] to V[x] with values starting at I") {
   chip8.PC = 0;
   chip8.V[0] = 0;

@@ -271,6 +271,16 @@ void chip8::emulate_cycle() {
       PC += 2;
       break;
     }
+    case 0x55: {
+      for (int i=0; i<= (x); i++) {
+        memory[I + i] = V[i];	     
+      }
+
+      I = I + x + 1;
+
+      PC += 2;
+      break;
+    }
     case 0x65: {
       for (int i = 0; i <= (x); i++) {
         V[i] = memory[I + i];
