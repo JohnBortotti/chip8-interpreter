@@ -239,7 +239,7 @@ TEST_CASE("opcode 0x8XY5 should subtract value v[y] to v[x] with borrow flag") {
   REQUIRE(chip8.PC == 2);
 }
 
-TEST_CASE("opcode 0x8XY6 should store v[y] shifted left 1 to v[x] and v[f] to most significant bit prior shift") {
+TEST_CASE("opcode 0x8XY6 should store v[y] shifted right 1 to v[x] and v[f] to most significant bit prior shift") {
   chip8.PC = 0;
 
   chip8.V[1] = 0;
@@ -253,6 +253,40 @@ TEST_CASE("opcode 0x8XY6 should store v[y] shifted left 1 to v[x] and v[f] to mo
 
   REQUIRE(chip8.V[1] == 0b00000011);
   REQUIRE(chip8.V[0xF] == 0);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0x8XY7 decrement v[y] from v[x] with borrow flag") {
+  chip8.PC = 0;
+
+  chip8.V[1] = 10;
+  chip8.V[2] = 15;
+  chip8.V[0xF] = 3;
+
+  chip8.memory[0] = 0x81;
+  chip8.memory[1] = 0x27;
+
+  chip8.emulate_cycle();
+
+  // REQUIRE(chip8.V[1] == 0);
+  REQUIRE(chip8.V[0xF] == 0);
+  REQUIRE(chip8.PC == 2);
+}
+
+TEST_CASE("opcode 0x8XYE should store v[y] shifted left 1 to v[x] and v[f] to most significant bit prior shift") {
+  chip8.PC = 0;
+
+  chip8.V[1] = 0;
+  chip8.V[2] = 0b10000110;
+  chip8.V[0xF] = 6;
+
+  chip8.memory[0] = 0x81;
+  chip8.memory[1] = 0x2E;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[1] == 0b00001100);
+  REQUIRE(chip8.V[0xF] == 1);
   REQUIRE(chip8.PC == 2);
 }
 

@@ -174,8 +174,20 @@ void chip8::emulate_cycle() {
       break;
     }
     case 0x6: {
-      V[0xF] = V[y] & 1;
+      V[0xF] = V[y] & 0b00000001 ? 1 : 0;
       V[x] = V[y] >> 1;
+      PC += 2;
+      break;
+    }
+    case 0x7: {
+      V[y] > V[x] ? V[0xF] = 0 : V[0xF] = 1;
+      V[x] -= V[y]; 
+      PC += 2;
+      break;
+    }
+    case 0xE: {
+      V[0xF] = V[y] & 0b10000000 ? 1 : 0;
+      V[x] = V[y] << 1;
       PC += 2;
       break;
     }
