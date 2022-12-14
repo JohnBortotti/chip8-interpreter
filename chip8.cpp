@@ -244,6 +244,11 @@ void chip8::emulate_cycle() {
   }
   case 0xF000: {
     switch (nn) {
+    case 0x07: {
+      V[x] = delay_timer;
+      PC += 2;
+      break;
+    }
     case 0x15: {
       delay_timer = x;
       PC += 2;

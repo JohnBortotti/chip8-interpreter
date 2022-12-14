@@ -354,6 +354,20 @@ TEST_CASE("opcode 0xDXYN should set correct gfx bitmap and render pixels") {
   REQUIRE(chip8.gfx[8][3] == 1);
 }
 
+TEST_CASE("opcode 0xFX07 should set V[x] = delay_timer") {
+  chip8.PC = 0;
+  chip8.delay_timer = 9;
+  chip8.V[4] = 0;
+
+  chip8.memory[0] = 0xF4;
+  chip8.memory[1] = 0x07;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[4] == 9);
+  REQUIRE(chip8.PC == 2);
+}
+
 TEST_CASE("opcode 0xFX15 should set delay_timer = x") {
   chip8.PC = 0;
   chip8.delay_timer = 0;
