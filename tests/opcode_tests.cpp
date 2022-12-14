@@ -239,6 +239,23 @@ TEST_CASE("opcode 0x8XY5 should subtract value v[y] to v[x] with borrow flag") {
   REQUIRE(chip8.PC == 2);
 }
 
+TEST_CASE("opcode 0x8XY6 should store v[y] shifted left 1 to v[x] and v[f] to most significant bit prior shift") {
+  chip8.PC = 0;
+
+  chip8.V[1] = 0;
+  chip8.V[2] = 0b00000110;
+  chip8.V[0xF] = 2;
+
+  chip8.memory[0] = 0x81;
+  chip8.memory[1] = 0x26;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.V[1] == 0b00000011);
+  REQUIRE(chip8.V[0xF] == 0);
+  REQUIRE(chip8.PC == 2);
+}
+
 TEST_CASE("opcode 0x9XY0 should skip if V[x] != V[y]") {
   chip8.PC = 0;
   chip8.V[1] = 4;

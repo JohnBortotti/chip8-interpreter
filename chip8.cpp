@@ -8,9 +8,8 @@ void chip8::initialize(std::string rom_path) {
   opcode = 0;
   I = 0x00;
   draw_flag = 0;
-
+ 
   initialize_SDL();
-
   clear_keypad();
   clear_gfx();
   clear_memory();
@@ -18,7 +17,6 @@ void chip8::initialize(std::string rom_path) {
   clear_stack();
   reset_timers();
   load_fontset();
-
   load_game(rom_path);
 }
 
@@ -172,6 +170,12 @@ void chip8::emulate_cycle() {
     case 0x5: {
       V[0xF] = (V[y] > V[x]) ? 0 : 1;
       V[x] -= V[y];
+      PC += 2;
+      break;
+    }
+    case 0x6: {
+      V[0xF] = V[y] & 1;
+      V[x] = V[y] >> 1;
       PC += 2;
       break;
     }
