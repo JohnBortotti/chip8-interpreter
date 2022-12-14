@@ -354,6 +354,30 @@ TEST_CASE("opcode 0xDXYN should set correct gfx bitmap and render pixels") {
   REQUIRE(chip8.gfx[8][3] == 1);
 }
 
+TEST_CASE("opcode 0xEX9E should skip next if V[x] keypad is pressed") {
+  chip8.PC = 0;
+  chip8.keypad[6] = 1;
+
+  chip8.memory[0] = 0xE6;
+  chip8.memory[1] = 0x9E;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 4);
+}
+
+TEST_CASE("opcode 0xEXA1 should skip next if V[x] keypad is not pressed") {
+  chip8.PC = 0;
+  chip8.keypad[2] = 1;
+
+  chip8.memory[0] = 0xE2;
+  chip8.memory[1] = 0xA1;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.PC == 2);
+}
+
 TEST_CASE("opcode 0xFX07 should set V[x] = delay_timer") {
   chip8.PC = 0;
   chip8.delay_timer = 9;
@@ -381,6 +405,18 @@ TEST_CASE("opcode 0xFX15 should set delay_timer = x") {
   REQUIRE(chip8.PC == 2);
 }
 
+TEST_CASE("opcode 0xFX18 should set sound_timer = x") {
+  chip8.PC = 0;
+  chip8.delay_timer = 9;
+
+  chip8.memory[0] = 0xF4;
+  chip8.memory[1] = 0x18;
+
+  chip8.emulate_cycle();
+
+  REQUIRE(chip8.sound_timer == 4);
+  REQUIRE(chip8.PC == 2);
+}
 TEST_CASE("opcode 0xFX1E should set I += V[x]") {
   chip8.PC = 0;
   chip8.V[4] = 2;

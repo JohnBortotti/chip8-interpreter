@@ -206,10 +206,11 @@ void chip8::emulate_cycle() {
     }
     break;
   }
-  case 0xA000:
+  case 0xA000: {
     I = nnn;
     PC += 2;
     break;
+  }
   case 0xD000: {
     unsigned short row_pixels;
 
@@ -242,6 +243,31 @@ void chip8::emulate_cycle() {
     PC += 2;
     break;
   }
+  case 0xE000: {
+    switch (nn) {
+    case 0x9E: {
+      if (keypad[x] == 1) {
+        PC += 4;
+      } else {
+        PC += 2;
+      }
+      break;
+    }		
+    case 0xA1: {
+      if (keypad[x] == 1) {
+        PC += 2;
+      } else {
+        PC += 4;
+      }
+      break;
+    }		
+    default:
+      printf("opcode desconhecido: %X\n", opcode);
+      exit(0);
+      break;
+    }
+    break;
+  }
   case 0xF000: {
     switch (nn) {
     case 0x07: {
@@ -251,6 +277,11 @@ void chip8::emulate_cycle() {
     }
     case 0x15: {
       delay_timer = x;
+      PC += 2;
+      break;
+    }
+    case 0x18: {
+      sound_timer = x;
       PC += 2;
       break;
     }
