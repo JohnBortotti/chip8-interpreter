@@ -9,6 +9,8 @@ void chip8::initialize(std::string rom_path) {
   I = 0x00;
   draw_flag = 0;
  
+  srand(time(0));
+
   initialize_SDL();
   clear_keypad();
   clear_gfx();
@@ -208,6 +210,11 @@ void chip8::emulate_cycle() {
   }
   case 0xA000: {
     I = nnn;
+    PC += 2;
+    break;
+  }
+  case 0xC000: {
+    V[x] = (rand() % 0xFF) & nn;
     PC += 2;
     break;
   }
