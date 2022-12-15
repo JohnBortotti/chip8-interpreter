@@ -361,6 +361,10 @@ void chip8::initialize_SDL() {
 }
 
 void chip8::render_SDL_from_gfx() {
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+  SDL_RenderClear(renderer);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
   int i, j;
 
   sdl_rect.y = 0;
