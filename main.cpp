@@ -1,7 +1,8 @@
 #include "./chip8.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_timer.h>
 
-void handle_inputs(SDL_Event event, chip8 chip8) {
+void handle_inputs(SDL_Event event, chip8 &chip8) {
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
     case SDL_QUIT: {
@@ -91,11 +92,37 @@ void play_mode(std::string rom_path) {
   chip8 chip8;
   chip8.initialize(rom_path);
 
-  while (true) {
-    SDL_Event event;
+  constexpr float cpu_rate = 1000; 
+  constexpr float ticks_todo = cpu_rate / 60;
+  constexpr float tick_ms = (1.0 / cpu_rate) * 1000.0;
 
+  unsigned int acc = SDL_GetTicks();
+  unsigned int last = SDL_GetTicks();
+
+  float current_ticks = 0;
+
+  while (true) {
+    acc += SDL_GetTicks() - last;
+
+    if (acc >= tick_ms) {
+	current_ticks++;
+        acc = 0;
+    } else {
+	last = SDL_GetTicks();
+	continue;
+    }
+
+    SDL_Event event;
     handle_inputs(event, chip8);
-    chip8.emulate_cycle();
+
+    if (current_ticks < ticks_todo) {
+        chip8.emulate_cycle();
+    } else {
+	current_ticks = 0;
+    }
+
+    last = SDL_GetTicks();
+
   }
 }
 

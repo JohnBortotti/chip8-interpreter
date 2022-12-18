@@ -253,7 +253,7 @@ void chip8::emulate_cycle() {
   case 0xE000: {
     switch (nn) {
     case 0x9E: {
-      if (keypad[x] == 1) {
+      if (keypad[x] != 0) {
         PC += 4;
       } else {
         PC += 2;
@@ -261,7 +261,7 @@ void chip8::emulate_cycle() {
       break;
     }		
     case 0xA1: {
-      if (keypad[x] == 1) {
+      if (keypad[x] != 0) {
         PC += 2;
       } else {
         PC += 4;
@@ -347,6 +347,8 @@ void chip8::emulate_cycle() {
     render_SDL_from_gfx();
     draw_flag = 0;
   }
+
+  clear_keypad();
 }
 
 void chip8::initialize_SDL() {
@@ -401,7 +403,6 @@ void chip8::clear_keypad() {
   }
 }
 
-// load fontset values to memory
 void chip8::load_fontset() {
   for (int x = 0; x <= 80; x++) {
     memory[x] = fontset[x];
